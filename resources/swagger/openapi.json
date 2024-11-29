@@ -1,0 +1,575 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Phonebook API",
+        "version": "1.0.0"
+    },
+    "tags": [
+        {
+            "name": "Авторизация",
+            "description": "Авторизация пользователя"
+        },
+        {
+            "name": "Телефонная книга",
+            "description": "Управление контактами"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": ["Авторизация"],
+                "summary": "Авторизация пользователя",
+                "description": "Авторизация пользователя по логину и паролю",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "pass1234"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Пользователь авторизован"
+                    },
+                    "400": {
+                        "description": "Неправильные логин или пароль"
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": ["Авторизация"],
+                "summary": "Регистрация пользователя",
+                "description": "Регистрания пользователя и авторизация",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Name Name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "pass1234"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Пользователь авторизован"
+                    },
+                    "400": {
+                        "description": "Неправильные логин или пароль"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": ["Авторизация"],
+                "summary": "Выход из профиля",
+                "description": "Выход",
+                "responses": {
+                    "204": {
+                        "description": "Выход завершен"
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": ["Авторизация"],
+                "summary": "Информация о пользователе",
+                "description": "Получение информации о пользователе",
+                "responses": {
+                    "200": {
+                        "description": "Пользователь получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/contacts": {
+            "get": {
+                "tags": ["Телефонная книга"],
+                "summary": "Списки контактов",
+                "description": "Списки обычных и избранных контактов",
+                "operationId": "getContacts",
+                "responses": {
+                    "200": {
+                        "description": "Списки загружены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "phoneNumbers": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ContactNumberTable"
+                                            }
+                                        },
+                                        "favoriteNumbers": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ContactNumberTable"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Телефонная книга"],
+                "summary": "Создание контакта",
+                "description": "Создание нового контакта",
+                "operationId": "createContact",
+                "requestBody": {
+                    "description": "Данные контакта",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactNumberCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Контакт создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactNumber"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Неправильные или недостаточные данные в запросе"
+                    },
+                    "204": {
+                        "description": "Запрос не обработан"
+                    }
+                }
+            }
+        },
+        "/api/contacts/:contact": {
+            "get": {
+                "tags": ["Телефонная книга"],
+                "summary": "Получение контакта по ID",
+                "operationId": "getContactByID",
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID контакта",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Запись получена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactNumber"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Контакт не найден"
+                    }
+                }
+            },
+            "patch": {
+                "tags": ["Телефонная книга"],
+                "summary": "Обновление контакта",
+                "description": "Редактирование контакта",
+                "operationId": "editContact",
+                "requestBody": {
+                    "description": "Данные контакта",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactNumberEditRequest"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID контакта",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Контакт обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ContactNumber"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Контакт не найден"
+                    },
+                    "422": {
+                        "description": "Неправильные или недостаточные данные в запросе"
+                    },
+                    "204": {
+                        "description": "Запрос не обработан"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Телефонная книга"],
+                "summary": "Удаление контакта",
+                "operationId": "deleteContact",
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID контакта",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Контакт удален"
+                    },
+                    "404": {
+                        "description": "Контакт не найден"
+                    }
+                }
+            }
+        },
+        "/api/contacts/:contact/mark-favorite": {
+            "patch": {
+                "tags": ["Телефонная книга"],
+                "summary": "Добавление контакта в избранное",
+                "operationId": "markContactFavorite",
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID контакта",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Контакт добавлен в избранное"
+                    },
+                    "404": {
+                        "description": "Контакт не найден"
+                    }
+                }
+            }
+        },
+        "/api/contacts/:contact/unmark-favorite": {
+            "patch": {
+                "tags": ["Телефонная книга"],
+                "summary": "Удалить контакт из избранного",
+                "operationId": "unmarkContactFavorite",
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID контакта",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Контакт удален из избранного"
+                    },
+                    "404": {
+                        "description": "Контакт не найден"
+                    }
+                }
+            }
+        },
+        "/api/phonebook/type-numbers": {
+            "get": {
+                "tags": ["Телефонная книга"],
+                "summary": "Получение типов номеров для форм",
+                "operationId": "getTypeNumbers",
+                "responses": {
+                    "200": {
+                        "description": "Типы номеров получены",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PhoneNumberType"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ContactNumberTable": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Full name contact",
+                        "default": "Firstname Lastname"
+                    }
+                }
+            },
+            "ContactNumber": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "company": {
+                        "type": "string"
+                    },
+                    "phone_type": {
+                        "type": "string",
+                        "default": "mobile"
+                    },
+                    "phone_type_translate": {
+                        "type": "string",
+                        "default": "Мобильный"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "default": "79991112233"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "description": "Path to avatar image"
+                    }
+                }
+            },
+            "ContactNumberCreateRequest": {
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "company": {
+                        "type": "string"
+                    },
+                    "phone_type": {
+                        "type": "string",
+                        "default": "mobile"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "default": "79991112233"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "avatar": {
+                        "type": "object"
+                    }
+                },
+                "required": ["first_name", "phone_type", "phone"]
+            },
+            "ContactNumberEditRequest": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "company": {
+                        "type": "string"
+                    },
+                    "phone_type": {
+                        "type": "string",
+                        "default": "mobile"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "default": "79991112233"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "avatar": {
+                        "type": "object"
+                    }
+                },
+                "required": ["id", "first_name", "phone_type", "phone"]
+            },
+            "PhoneNumberType": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "description": "Тип номера (Текст)"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "Типо номера (Значение)"
+                    }
+                }
+            }
+        }
+    }
+}
