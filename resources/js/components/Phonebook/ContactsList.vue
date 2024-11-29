@@ -87,7 +87,7 @@
                     </template>
                     <template v-else>
                         <tr class="bg-white border-b">
-                            <td scope="row" colspan="2" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap text-center">
+                            <td colspan="3" class="text-center">
                                 У вас нет избранных номеров
                             </td>
                         </tr>
