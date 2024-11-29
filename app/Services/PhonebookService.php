@@ -18,6 +18,7 @@ use Illuminate\Http\UploadedFile;
  * @method ContactNumber updateContact(array $values, ContactNumber $contact)
  * @method bool deleteContact(ContactNumber $contact)
  * @method bool markContactAsFavorite(ContactNumber $contact)
+ * @method bool unmarkContactAsFavorite(ContactNumber $contact)
  */
 class PhonebookService
 {
